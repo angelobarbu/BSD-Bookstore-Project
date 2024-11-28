@@ -1,0 +1,7 @@
+Flask
+Flask-SQLAlchemy
+Flask-Bcrypt
+Flask-APScheduler
+PyJWT
+psycopg2-binary
+pymysql
