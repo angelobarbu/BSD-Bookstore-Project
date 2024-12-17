@@ -52,8 +52,6 @@ public class Book {
     )
     private Set<Author> authors;
 
-
-    // Getters and Setters
     public Integer getBookID() {
         return bookID;
     }

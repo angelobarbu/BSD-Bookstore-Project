@@ -25,14 +25,13 @@ public class Author {
     @Size(max = 100)
     private String country;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "book_author",
             joinColumns = @JoinColumn(name = "authorid"),
             inverseJoinColumns = @JoinColumn(name = "bookid")
     )
     private Set<Book> books;
-
 
     public Integer getAuthorID() {
         return authorID;
