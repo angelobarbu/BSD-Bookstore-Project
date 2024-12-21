@@ -3,6 +3,7 @@ package psb.project.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import psb.project.dto.WishlistItemInputDTO;
 import psb.project.model.Wishlist;
 import psb.project.model.WishlistItem;
 import psb.project.service.WishlistService;
@@ -24,8 +25,9 @@ public class WishlistController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<WishlistItem> addWishlistItem(@RequestBody WishlistItem wishlistItem) {
-        return ResponseEntity.ok(wishlistService.addWishlistItem(wishlistItem));
+    public ResponseEntity<WishlistItem> addWishlistItem(@RequestBody WishlistItemInputDTO wishlistItemInputDTO) {
+        WishlistItem wishlistItem = wishlistService.addWishlistItem(wishlistItemInputDTO);
+        return ResponseEntity.ok(wishlistItem);
     }
 
     @DeleteMapping("/remove/{wishlistItemID}")

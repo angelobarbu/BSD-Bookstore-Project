@@ -3,6 +3,7 @@ package psb.project.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import psb.project.dto.ReviewInputDTO;
 import psb.project.model.Review;
 import psb.project.service.ReviewService;
 
@@ -20,8 +21,9 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<Review> submitReview(@RequestBody Review review) {
-        return ResponseEntity.ok(reviewService.submitReview(review));
+    public ResponseEntity<Review> submitReview(@RequestBody ReviewInputDTO reviewInputDTO) {
+        Review review = reviewService.submitReview(reviewInputDTO);
+        return ResponseEntity.ok(review);
     }
 
     @PutMapping("/{reviewID}")

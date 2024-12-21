@@ -3,6 +3,7 @@ package psb.project.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import psb.project.dto.UserInputDTO;
 import psb.project.model.User;
 import psb.project.repository.UserRepository;
 
@@ -25,37 +26,17 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    public User createUser(User user) {
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        return userRepository.save(user);
-    }
-
-    public Optional<User> updateUser(Integer id, User userDetails) {
+    public Optional<User> updateUser(Integer id, UserInputDTO userInputDTO) {
         return userRepository.findById(id).map(existingUser -> {
-            existingUser.setFullName(userDetails.getFullName());
-            existingUser.setEmail(userDetails.getEmail());
-            existingUser.setPhoneNumber(userDetails.getPhoneNumber());
-            existingUser.setBirthdate(userDetails.getBirthdate());
-            existingUser.setProfilePicture(userDetails.getProfilePicture());
-            if (userDetails.getPasswordHash() != null && !userDetails.getPasswordHash().isEmpty()) {
-                existingUser.setPasswordHash(passwordEncoder.encode(userDetails.getPasswordHash()));
+            existingUser.setFullName(userInputDTO.fullName());
+            existingUser.setEmail(userInputDTO.email());
+            existingUser.setPhoneNumber(userInputDTO.phoneNumber());
+            existingUser.setBirthdate(userInputDTO.birthdate());
+            existingUser.setProfilePicture(userInputDTO.profilePicture());
+            if (userInputDTO.password() != null && !userInputDTO.password().isEmpty()) {
+                existingUser.setPasswordHash(passwordEncoder.encode(userInputDTO.password()));
             }
             return userRepository.save(existingUser);
         });
-    }
-
-    public boolean deleteUser(Integer id) {
-        return userRepository.findById(id).map(user -> {
-            userRepository.delete(user);
-            return true;
-        }).orElse(false);
-    }
-
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
     }
 }

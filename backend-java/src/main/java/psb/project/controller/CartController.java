@@ -3,6 +3,7 @@ package psb.project.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import psb.project.dto.CartItemInputDTO;
 import psb.project.model.Cart;
 import psb.project.model.CartItem;
 import psb.project.service.CartService;
@@ -24,12 +25,15 @@ public class CartController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<CartItem> addCartItem(@RequestBody CartItem cartItem) {
-        return ResponseEntity.ok(cartService.addCartItem(cartItem));
+    public ResponseEntity<CartItem> addCartItem(@RequestBody CartItemInputDTO cartItemInputDTO) {
+        return ResponseEntity.ok(cartService.addCartItem(cartItemInputDTO));
     }
 
     @PutMapping("/update/{cartItemID}")
-    public ResponseEntity<CartItem> updateCartItem(@PathVariable Integer cartItemID, @RequestParam Integer quantity) {
+    public ResponseEntity<CartItem> updateCartItem(
+            @PathVariable Integer cartItemID,
+            @RequestParam Integer quantity
+    ) {
         return cartService.updateCartItem(cartItemID, quantity)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -40,4 +44,16 @@ public class CartController {
         cartService.removeCartItem(cartItemID);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/total/{userID}")
+    public ResponseEntity<Double> calculateCartTotal(@PathVariable Integer userID) {
+        return ResponseEntity.ok(cartService.calculateCartTotal(userID));
+    }
+
+    @DeleteMapping("/clear/{userID}")
+    public ResponseEntity<Void> clearCart(@PathVariable Integer userID) {
+        cartService.clearCart(userID);
+        return ResponseEntity.noContent().build();
+    }
 }
+

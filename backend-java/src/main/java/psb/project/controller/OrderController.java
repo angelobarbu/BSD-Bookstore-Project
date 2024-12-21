@@ -3,9 +3,8 @@ package psb.project.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import psb.project.dto.OrderRequest;
+import psb.project.dto.OrderInputDTO;
 import psb.project.model.Order;
-import psb.project.model.OrderItem;
 import psb.project.service.OrderService;
 
 import java.util.List;
@@ -22,10 +21,8 @@ public class OrderController {
     }
 
     @PostMapping("/place")
-    public ResponseEntity<Order> placeOrder(@RequestBody OrderRequest request) {
-        Order order = request.getOrder();
-        List<OrderItem> orderItems = request.getOrderItems();
-        return ResponseEntity.ok(orderService.placeOrder(order, orderItems));
+    public ResponseEntity<Order> placeOrder(@RequestBody OrderInputDTO orderInputDTO) {
+        return ResponseEntity.ok(orderService.placeOrder(orderInputDTO));
     }
 
     @GetMapping("/user/{userID}")

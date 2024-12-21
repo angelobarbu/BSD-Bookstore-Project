@@ -22,6 +22,7 @@ public class User {
     @NotNull
     @Size(max = 255)
     @Email
+    @Column(unique = true)
     private String email;
 
     @NotNull
