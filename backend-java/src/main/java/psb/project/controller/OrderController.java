@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import psb.project.dto.OrderInputDTO;
 import psb.project.model.Order;
+import psb.project.security.JwtTokenUtil;
 import psb.project.service.OrderService;
 
 import java.util.List;
@@ -21,26 +22,46 @@ public class OrderController {
     }
 
     @PostMapping("/place")
-    public ResponseEntity<Order> placeOrder(@RequestBody OrderInputDTO orderInputDTO) {
-        return ResponseEntity.ok(orderService.placeOrder(orderInputDTO));
+    public ResponseEntity<Order> placeOrder(
+            @RequestBody OrderInputDTO orderInputDTO,
+            @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String emailFromToken = JwtTokenUtil.getEmailFromToken(token);
+
+        return ResponseEntity.ok(orderService.placeOrder(orderInputDTO, emailFromToken));
     }
 
-    @GetMapping("/user/{userID}")
-    public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable Integer userID) {
-        return ResponseEntity.ok(orderService.getOrdersByUserID(userID));
+    @GetMapping
+    public ResponseEntity<List<Order>> getOrders(
+            @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String emailFromToken = JwtTokenUtil.getEmailFromToken(token);
+
+        return ResponseEntity.ok(orderService.getOrdersByEmail(emailFromToken));
     }
 
     @GetMapping("/{orderID}")
-    public ResponseEntity<Order> getOrderById(@PathVariable Integer orderID) {
-        return orderService.getOrderById(orderID)
+    public ResponseEntity<Order> getOrderById(
+            @PathVariable Integer orderID,
+            @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String emailFromToken = JwtTokenUtil.getEmailFromToken(token);
+
+        return orderService.getOrderById(orderID, emailFromToken)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.status(403).build());
     }
 
     @PutMapping("/update-status/{orderID}")
-    public ResponseEntity<Order> updateOrderStatus(@PathVariable Integer orderID, @RequestParam String status) {
-        return orderService.updateOrderStatus(orderID, status)
+    public ResponseEntity<Order> updateOrderStatus(
+            @PathVariable Integer orderID,
+            @RequestParam String status,
+            @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String emailFromToken = JwtTokenUtil.getEmailFromToken(token);
+
+        return orderService.updateOrderStatus(orderID, status, emailFromToken)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.status(403).build());
     }
 }

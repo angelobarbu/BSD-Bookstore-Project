@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import psb.project.dto.CartItemInputDTO;
 import psb.project.model.Cart;
 import psb.project.model.CartItem;
+import psb.project.security.JwtTokenUtil;
 import psb.project.service.CartService;
 
 @RestController
@@ -19,40 +20,64 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    @GetMapping("/{userID}")
-    public ResponseEntity<Cart> getCartByUserID(@PathVariable Integer userID) {
-        return ResponseEntity.ok(cartService.getCartByUserID(userID));
+    @GetMapping
+    public ResponseEntity<Cart> getCart(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String emailFromToken = JwtTokenUtil.getEmailFromToken(token);
+
+        return cartService.getCartByEmail(emailFromToken)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(403).build());
     }
 
     @PostMapping("/add")
-    public ResponseEntity<CartItem> addCartItem(@RequestBody CartItemInputDTO cartItemInputDTO) {
-        return ResponseEntity.ok(cartService.addCartItem(cartItemInputDTO));
+    public ResponseEntity<CartItem> addCartItem(
+            @RequestBody CartItemInputDTO cartItemInputDTO,
+            @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String emailFromToken = JwtTokenUtil.getEmailFromToken(token);
+
+        return ResponseEntity.ok(cartService.addCartItem(cartItemInputDTO, emailFromToken));
     }
 
     @PutMapping("/update/{cartItemID}")
     public ResponseEntity<CartItem> updateCartItem(
             @PathVariable Integer cartItemID,
-            @RequestParam Integer quantity
-    ) {
-        return cartService.updateCartItem(cartItemID, quantity)
+            @RequestParam Integer quantity,
+            @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String emailFromToken = JwtTokenUtil.getEmailFromToken(token);
+
+        return cartService.updateCartItem(cartItemID, quantity, emailFromToken)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.status(403).build());
     }
 
     @DeleteMapping("/remove/{cartItemID}")
-    public ResponseEntity<Void> removeCartItem(@PathVariable Integer cartItemID) {
-        cartService.removeCartItem(cartItemID);
+    public ResponseEntity<Void> removeCartItem(
+            @PathVariable Integer cartItemID,
+            @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String emailFromToken = JwtTokenUtil.getEmailFromToken(token);
+
+        cartService.removeCartItem(cartItemID, emailFromToken);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/total/{userID}")
-    public ResponseEntity<Double> calculateCartTotal(@PathVariable Integer userID) {
-        return ResponseEntity.ok(cartService.calculateCartTotal(userID));
+    @GetMapping("/total")
+    public ResponseEntity<Double> calculateCartTotal(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String emailFromToken = JwtTokenUtil.getEmailFromToken(token);
+
+        return ResponseEntity.ok(cartService.calculateCartTotal(emailFromToken));
     }
 
-    @DeleteMapping("/clear/{userID}")
-    public ResponseEntity<Void> clearCart(@PathVariable Integer userID) {
-        cartService.clearCart(userID);
+    @DeleteMapping("/clear")
+    public ResponseEntity<Void> clearCart(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String emailFromToken = JwtTokenUtil.getEmailFromToken(token);
+
+        cartService.clearCart(emailFromToken);
         return ResponseEntity.noContent().build();
     }
 }

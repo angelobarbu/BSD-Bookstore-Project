@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import psb.project.dto.UserInputDTO;
 import psb.project.model.User;
+import psb.project.security.JwtTokenUtil;
 import psb.project.service.UserService;
 
 @RestController
@@ -18,18 +19,30 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
-        return userService.getUserById(id)
+    @GetMapping("/{email}")
+    public ResponseEntity<User> getUserByEmail(
+            @PathVariable String email,
+            @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String emailFromToken = JwtTokenUtil.getEmailFromToken(token);
+
+        return userService.getUserByEmail(email, emailFromToken)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.status(403).build());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Integer id, @RequestBody UserInputDTO userInputDTO) {
-        return userService.updateUser(id, userInputDTO)
+    @PutMapping("/{email}")
+    public ResponseEntity<User> updateUser(
+            @PathVariable String email,
+            @RequestBody UserInputDTO userInputDTO,
+            @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String emailFromToken = JwtTokenUtil.getEmailFromToken(token);
+
+        return userService.updateUser(email, userInputDTO, emailFromToken)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.status(403).build());
     }
 }
+
 

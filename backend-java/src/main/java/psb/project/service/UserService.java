@@ -7,7 +7,6 @@ import psb.project.dto.UserInputDTO;
 import psb.project.model.User;
 import psb.project.repository.UserRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,14 +21,19 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Optional<User> getUserById(Integer id) {
-        return userRepository.findById(id);
+    public Optional<User> getUserByEmail(String email, String emailFromToken) {
+        if (!email.equals(emailFromToken)) {
+            return Optional.empty();
+        }
+        return userRepository.findByEmail(email);
     }
 
-    public Optional<User> updateUser(Integer id, UserInputDTO userInputDTO) {
-        return userRepository.findById(id).map(existingUser -> {
+    public Optional<User> updateUser(String email, UserInputDTO userInputDTO, String emailFromToken) {
+        if (!email.equals(emailFromToken)) {
+            return Optional.empty();
+        }
+        return userRepository.findByEmail(email).map(existingUser -> {
             existingUser.setFullName(userInputDTO.fullName());
-            existingUser.setEmail(userInputDTO.email());
             existingUser.setPhoneNumber(userInputDTO.phoneNumber());
             existingUser.setBirthdate(userInputDTO.birthdate());
             existingUser.setProfilePicture(userInputDTO.profilePicture());
