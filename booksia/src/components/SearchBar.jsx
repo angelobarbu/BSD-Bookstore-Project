@@ -9,8 +9,6 @@ function SearchBar() {
             <ShoppingCart />
             <User/>
         </div>
-
-
     );
 }
 
