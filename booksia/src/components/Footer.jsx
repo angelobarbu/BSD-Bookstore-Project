@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 function Footer() {
     return (
         <footer className="flex flex-col sm:flex-row text-white bg-black p-4 pb-10">
@@ -6,11 +7,11 @@ function Footer() {
                 <p className="text-lg pb-1">About us</p>
                 <p className="text-sm text-gray-400 pb-1">Forgot password</p>
                 <p className="text-sm text-gray-400 pb-1">Shipping and returns</p>
-                <p className="text-sm text-gray-400 pb-1">Home</p>
-                <p className="text-sm text-gray-400 pb-1">My Profile</p>
+                <Link to="/"><p className="text-sm text-gray-400 pb-1">Home</p></Link>
+                <Link to="/profile"><p className="text-sm text-gray-400 pb-1">My Profile</p></Link>
             </div>
             <div className="py-2">
-                <p className="text-lg pb-1">Legal Notice</p>
+            <p className="text-lg pb-1">Legal Notice</p>
                 <p className="text-sm text-gray-400 pb-1">Terms of use</p>
                 <p className="text-sm text-gray-400 pb-1">Cookies</p>
                 <p className="text-sm text-gray-400 pb-1">Privacy Policy</p>
