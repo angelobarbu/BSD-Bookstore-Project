@@ -1,3 +1,16 @@
 *{
     font-family: "Aoboshi One", sans-serif;
 }
+
+nav{
+    background-color: black;
+    position: sticky;
+    top: 0;
+}
+nav h1{
+    color: white;
+    text-align: center;
+    font-size: 1.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}

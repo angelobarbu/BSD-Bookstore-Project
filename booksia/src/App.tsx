@@ -1,10 +1,12 @@
 import './App.css'
 import {Button} from "@/components/ui/button.tsx";
+import Navbar from "@/components/navbar.jsx";
 
 function App() {
   return (
     <>
-      <Button>Hello</Button>
+        <Navbar />
+        <Button>Hello</Button>
     </>
   )
 }
