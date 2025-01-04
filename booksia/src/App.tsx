@@ -2,6 +2,7 @@ import './App.css';
 import Navbar from "@/components/navbar.jsx";
 import SearchBar from "@/components/SearchBar.jsx";
 import BookCard from "@/components/BookCard.tsx";
+import Pages from "@/components/Pages.jsx";
 
 function App() {
   return (
@@ -20,8 +21,7 @@ function App() {
             <BookCard/>
             <BookCard/>
         </div>
-
-
+        <Pages></Pages>
     </>
   )
 }
