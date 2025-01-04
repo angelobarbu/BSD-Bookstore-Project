@@ -9,7 +9,7 @@ import {
 
 function Pages() {
     return (
-        <div className="py-2">
+        <div className="py-4">
             <Pagination>
                 <PaginationContent>
                     <PaginationItem>
