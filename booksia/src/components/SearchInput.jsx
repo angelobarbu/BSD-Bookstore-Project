@@ -4,7 +4,7 @@ export default function SearchInput() {
     return (
         <div className="flex items-center w-full max-w-md space-x-2 rounded-full border-2 border-black  px-3.5 py-2">
             <Input type="search" placeholder="Search your next read"
-                   className="w-full border-0 h-6 shadow-none text-black font-semibold"/>
+                   className="w-full border-0 h-6 shadow-none text-black font-semibold focus-visible:outline-none"/>
             <SearchIcon className="h-4 w-4"/>
         </div>
     )
