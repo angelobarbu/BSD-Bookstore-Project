@@ -1,13 +1,13 @@
 import SearchInput from "@/components/SearchInput.jsx";
-
+import { Outlet, Link } from "react-router-dom";
 
 function SearchBar() {
     return (
         <div className="flex items-center space-x-2 gap-1 py-10 w-full place-content-center px-1 ">
             <SearchInput />
-            <Bookmark/>
-            <ShoppingCart />
-            <User/>
+            <Link to="/whishlist"><Bookmark /></Link>
+            <Link to="/checkout"><ShoppingCart /></Link>
+            <Link to="/profile"><User/></Link>
         </div>
     );
 }
