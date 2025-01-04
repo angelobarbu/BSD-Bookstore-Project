@@ -13,7 +13,7 @@ export default function HomePage(){
             <Navbar/>
             <SearchBar></SearchBar>
             <BookCategories></BookCategories>
-            <div className="flex gap-2 px-4">
+            <div className="flex gap-2 p-4">
                 <Button variant="outline">Filter</Button>
                 <Order></Order>
             </div>
