@@ -2,9 +2,11 @@
 import { cn } from "@/lib/utils";
 import React from "react";
 import {Button} from "@/components/ui/button.tsx";
+import {Link} from "react-router-dom";
 
 export default function BookCard() {
     return (
+        <Link to="/book">
         <div className="flex flex-col items-center gap-2">
             <Card>
                 <img src="src/assets/ex.jpg" alt="book cover" className="w-full h-auto rounded" />
@@ -17,6 +19,7 @@ export default function BookCard() {
             </Card>
             <Button className="my-2">Add to cart</Button>
         </div>
+        </Link>
     );
 }
 
