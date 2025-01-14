@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(tokenValidationFilter, UsernamePasswordAuthenticationFilter.class); // Add token validation filter
+                .addFilterBefore(tokenValidationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

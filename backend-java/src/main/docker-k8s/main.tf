@@ -3,25 +3,37 @@ provider "google" {
   region  = var.region
 }
 
+# Retrieve Google Cloud client config
+data "google_client_config" "default" {}
+
 # GKE Cluster
 resource "google_container_cluster" "primary" {
   name               = "backend-cluster"
   location           = var.region
-  initial_node_count = 3
+  initial_node_count = 1
+  deletion_protection = false
 
   node_config {
     machine_type = "e2-medium"
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
+    disk_size_gb = 10
+    service_account = "1029855694454-compute@developer.gserviceaccount.com"
+  }
+
+  master_auth {
+    client_certificate_config {
+      issue_client_certificate = true
+    }
   }
 }
 
 # Kubernetes Provider
 provider "kubernetes" {
-  host                   = google_container_cluster.primary.endpoint
+  host                   = "https://${google_container_cluster.primary.endpoint}"
   token                  = data.google_client_config.default.access_token
-  cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth[0].cluster_ca_certificate)
+  cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth.0.cluster_ca_certificate)
 }
 
 # Kubernetes Namespace
@@ -39,7 +51,7 @@ resource "kubernetes_deployment" "backend" {
   }
 
   spec {
-    replicas = 2
+    replicas = 1
 
     selector {
       match_labels = {
@@ -56,16 +68,17 @@ resource "kubernetes_deployment" "backend" {
 
       spec {
         container {
-          image = "gcr.io/${var.project_id}/backend-java:latest" # Replace with your Docker image
+          image = "us-central1-docker.pkg.dev/${var.project_id}/docker-repo/backend-java:1.1.0"
           name  = "backend-container"
 
-          ports {
+          port {
             container_port = 8080
           }
 
+          # Environment variables for connecting to Cloud SQL with public IP
           env {
             name  = "SPRING_DATASOURCE_URL"
-            value = var.spring_datasource_url
+            value = "jdbc:mysql://34.135.36.156:3306/booksia_db"  # Use the public IP here
           }
 
           env {
@@ -76,6 +89,17 @@ resource "kubernetes_deployment" "backend" {
           env {
             name  = "SPRING_DATASOURCE_PASSWORD"
             value = var.spring_datasource_password
+          }
+
+          resources {
+            limits = {
+              cpu    = "1000m"
+              memory = "2Gi"
+            }
+            requests = {
+              cpu    = "250m"
+              memory = "512Mi"
+            }
           }
         }
       }
@@ -98,8 +122,8 @@ resource "kubernetes_service" "backend" {
     type = "LoadBalancer"
 
     port {
-      protocol = "TCP"
-      port     = 80
+      protocol    = "TCP"
+      port        = 80
       target_port = 8080
     }
   }
