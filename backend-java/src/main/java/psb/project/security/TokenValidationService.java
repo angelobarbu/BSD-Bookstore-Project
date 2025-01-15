@@ -17,8 +17,17 @@ public class TokenValidationService {
     }
 
     public boolean isTokenValid(String token) {
+        System.out.println("Validating token: " + token);
+
         return sessionRepository.findByToken(token)
-                .map(session -> session.getExpiresAt().toLocalDateTime().isAfter(LocalDateTime.now()))
-                .orElse(false);
+                .map(session -> {
+                    boolean isValid = session.getExpiresAt().toLocalDateTime().isAfter(LocalDateTime.now());
+                    System.out.println("Session found, isValid: " + isValid);
+                    return isValid;
+                })
+                .orElseGet(() -> {
+                    System.out.println("Token not found in database");
+                    return false;
+                });
     }
 }
