@@ -1,22 +1,28 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 
-export default function RatingCard() {
+export default function RatingCard({ review }) {
+    const { title, rating, content } = review;
+    const stars = Array.from({ length: 5 }, (_, index) => index < rating);
+
     return (
         <>
             <Card>
                 <CardHeader>
-                    <CardTitle>Highly recommend</CardTitle>
+                    <CardTitle>{title}</CardTitle>
                     <CardDescription>
-                        <Star filled={true}/><Star filled={true}/><Star filled={true} /><Star/><Star/>
+                        {stars.map((filled, index) => (
+                            <Star key={index} filled={filled} />
+                        ))}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </p>
+                    <p>{content}</p>
                 </CardContent>
             </Card>
         </>
-    )
+    );
 }
+
 
 function Star({filled = false}) {
     return (
