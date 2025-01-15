@@ -1,27 +1,36 @@
 "use client";
 import { cn } from "@/lib/utils";
-import React from "react";
+import React, {useState} from "react";
 import {Button} from "@/components/ui/button.tsx";
 import {Link} from "react-router-dom";
 
-export default function BookCard() {
+export default function BookCard({ book }) {
     return (
-        <Link to="/book">
-        <div className="flex flex-col items-center gap-2">
-            <Card>
-                <img src="src/assets/ex.jpg" alt="book cover" className="w-full h-auto rounded" />
-                <CardTitle>Book title</CardTitle>
-                <CardDescription>by Author Name</CardDescription>
-                <div className="flex items-center justify-between w-full py-1">
-                    <p>35.5 LEI</p>
-                    <Bookmark />
+        <div className="flex flex-col items-center gap-2 h-full">
+            <Card className="flex flex-col h-full">
+                <Link to={`/book/${book.id}`} className="flex flex-col h-full">
+                    <img
+                        src={book.coverUrl}
+                        alt={`Cover of ${book.title}`}
+                        className="w-full h-auto rounded object-cover"
+                    />
+                    <div className="flex flex-col flex-grow justify-between">
+                        <CardTitle>{book.title}</CardTitle>
+                        <CardDescription className="text-sm text-gray-600">{`by ${book.author}`}</CardDescription>
+                    </div>
+                </Link>
+                <div className="flex items-center justify-between w-full py-1 mt-2">
+                    <p className="text-lg font-semibold">{book.price} LEI</p>
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <Bookmark />
+                    </div>
                 </div>
             </Card>
             <Button className="my-2">Add to cart</Button>
         </div>
-        </Link>
     );
 }
+
 
 
 export const Card = ({
@@ -81,12 +90,28 @@ export const CardDescription = ({
   );
 };
 
-function Bookmark(){
+function Bookmark() {
+    const [isBookmarked, setIsBookmarked] = useState(false);
+
+    const toggleBookmark = () => {
+        setIsBookmarked(!isBookmarked);
+    };
+
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
-             className="size-7">
-            <path strokeLinecap="round" strokeLinejoin="round"
-                  d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/>
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill={isBookmarked ? "currentColor" : "none"}
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="size-7 cursor-pointer"
+            onClick={toggleBookmark}
+        >
+            <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+            />
         </svg>
     );
 }
