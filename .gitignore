@@ -1,12 +1,1 @@
-/backend-java/src/main/resources/static/style.css
-/backend-java/src/main/resources/application.properties
-/backend-java/src/main/resources/cancel.html
-/backend-java/src/main/resources/checkout.html
-/backend-java/src/main/resources/success.html
-/backend-java/src/main/java/psb/project/service/PaymentService.java
-/backend-java/src/main/java/psb/project/repository/PaymentRepository.java
-/backend-java/src/main/java/psb/project/model/Payment.java
-/backend-java/src/main/java/psb/project/dto/PaymentsOutputDTO.java
-/backend-java/src/main/java/psb/project/dto/PaymentsInputDTO.java
-/backend-java/src/main/java/psb/project/controller/PaymentController.java
-/backend-java/src/main/java/psb/project/config/StripeConfig.java
+
