@@ -9,6 +9,7 @@ import BookPage from "@/pages/BookPage.jsx";
 import AboutUs from "@/pages/AboutUs.jsx";
 import ShippingReturns from "@/pages/ShippingReturns.jsx";
 import ContactUs from "@/pages/ContactUs.jsx";
+import LoginPage from "@/pages/LoginPage.jsx";
 
 function App() {
     return (
@@ -50,6 +51,7 @@ function App() {
                     <Route path="/about-us" element={<AboutUs />} />
                     <Route path="/shipping-returns" element={<ShippingReturns />} />
                     <Route path="/contact-us" element={<ContactUs />} />
+                    <Route path="/login" element={<LoginPage />} />
                     <Route path="*" element={<NoPage />} />
                 </Routes>
             </BrowserRouter>
