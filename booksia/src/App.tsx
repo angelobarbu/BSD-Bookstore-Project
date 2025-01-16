@@ -10,6 +10,7 @@ import AboutUs from "@/pages/AboutUs.jsx";
 import ShippingReturns from "@/pages/ShippingReturns.jsx";
 import ContactUs from "@/pages/ContactUs.jsx";
 import LoginPage from "@/pages/LoginPage.jsx";
+import RegisterPage from "@/pages/RegisterPage.jsx";
 
 function App() {
     return (
@@ -52,6 +53,7 @@ function App() {
                     <Route path="/shipping-returns" element={<ShippingReturns />} />
                     <Route path="/contact-us" element={<ContactUs />} />
                     <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
                     <Route path="*" element={<NoPage />} />
                 </Routes>
             </BrowserRouter>
