@@ -6,7 +6,7 @@ function Footer() {
             <div className="py-2 mr-5">
                 <Link to="/about-us"><p className="text-lg pb-1">About us</p></Link>
                 <p className="text-sm text-gray-400 pb-1">Forgot password</p>
-                <p className="text-sm text-gray-400 pb-1">Shipping and returns</p>
+                <Link to="/shipping-returns"><p className="text-sm text-gray-400 pb-1">Shipping and returns</p></Link>
                 <Link to="/"><p className="text-sm text-gray-400 pb-1">Home</p></Link>
                 <Link to="/profile"><p className="text-sm text-gray-400 pb-1">My Profile</p></Link>
             </div>
