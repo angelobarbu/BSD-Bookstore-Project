@@ -9,6 +9,7 @@ function Footer() {
                 <Link to="/shipping-returns"><p className="text-sm text-gray-400 pb-1">Shipping and returns</p></Link>
                 <Link to="/"><p className="text-sm text-gray-400 pb-1">Home</p></Link>
                 <Link to="/profile"><p className="text-sm text-gray-400 pb-1">My Profile</p></Link>
+                <Link to="/contact-us"><p className="text-sm text-gray-400 pb-1">Contact Us</p></Link>
             </div>
             <div className="py-2">
             <p className="text-lg pb-1">Legal Notice</p>
