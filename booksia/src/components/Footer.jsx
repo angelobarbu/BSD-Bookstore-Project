@@ -4,7 +4,7 @@ function Footer() {
         <footer className="flex flex-col sm:flex-row text-white bg-black p-4 pb-10">
             <p className="text-3xl p-3 sm:p-0 mr-5">booksia</p>
             <div className="py-2 mr-5">
-                <p className="text-lg pb-1">About us</p>
+                <Link to="/about-us"><p className="text-lg pb-1">About us</p></Link>
                 <p className="text-sm text-gray-400 pb-1">Forgot password</p>
                 <p className="text-sm text-gray-400 pb-1">Shipping and returns</p>
                 <Link to="/"><p className="text-sm text-gray-400 pb-1">Home</p></Link>

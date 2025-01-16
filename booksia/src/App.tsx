@@ -6,6 +6,7 @@ import WishlistPage from "@/pages/WishlistPage.jsx";
 import Checkout from "@/pages/Checkout.jsx";
 import Profile from "@/pages/Profile.jsx";
 import BookPage from "@/pages/BookPage.jsx";
+import AboutUs from "@/pages/AboutUs.jsx";
 
 function App() {
     return (
@@ -44,6 +45,7 @@ function App() {
                         }}
                     />
                     } />
+                    <Route path="/about-us" element={<AboutUs />} />
                     <Route path="*" element={<NoPage />} />
                 </Routes>
             </BrowserRouter>
