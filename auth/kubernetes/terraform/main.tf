@@ -43,7 +43,7 @@ resource "kubernetes_deployment" "auth_microservice" {
 
       spec {
         container {
-          image = "2y6cx0/auth-microservice:latest"
+          image = "angelobarbu18/auth-microservice:latest"
           name  = "auth-microservice"
           port {
             container_port = 5000

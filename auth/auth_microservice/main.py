@@ -13,8 +13,10 @@ import jwt
 class Config:
     """Config class for Flask app"""
     SCHEDULER_API_ENABLED = True
-    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:rootadmin@localhost/authdb' # For local testing
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:rootadmin@mysql-container/authdb' # For Docker
+    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root@127.0.0.1/authdb' # For local testing
+    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:rootadmin@mysql-container/authdb' # For Docker
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root@host.docker.internal/authdb' # Docker container connecting to locally hosted database
+
     SECRET_KEY = os.urandom(24)
     
     
