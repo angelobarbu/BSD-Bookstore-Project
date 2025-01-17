@@ -17,7 +17,8 @@ class Config:
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:rootadmin@mysql-container/authdb' # For Docker
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root@host.docker.internal/authdb' # Docker container connecting to locally hosted database
 
-    SECRET_KEY = os.urandom(24)
+    # SECRET_KEY = os.urandom(24)
+    SECRET_KEY = 'B0CGOm8ez1nBRT1JBo7UXVCgUJCFasUW' # common JWT token secret key for sharing at a backend level
     
     
 
