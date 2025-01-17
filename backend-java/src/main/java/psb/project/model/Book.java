@@ -1,5 +1,6 @@
 package psb.project.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -19,6 +20,7 @@ public class Book {
 
     @ManyToOne
     @JoinColumn(name = "publisherID")
+    @JsonManagedReference
     private Publisher publisher;
 
     @NotNull
@@ -51,6 +53,16 @@ public class Book {
             inverseJoinColumns = @JoinColumn(name = "authorid")
     )
     private Set<Author> authors;
+
+    @Size(max = 100)
+    private String genre;
+
+    @Size(max = 255)
+    private String collection;
+
+    private String deliveryTime;
+
+    private Integer numberOfPages;
 
     public Integer getBookID() {
         return bookID;
@@ -155,4 +167,20 @@ public class Book {
     public void setAuthors(Set<Author> authors) {
         this.authors = authors;
     }
+
+    public String getGenre() {  return genre; }
+
+    public void setGenre(String genre) {}
+
+    public String getCollection() {  return collection; }
+
+    public void setCollection(String collection) { this.collection = collection; }
+
+    public String getDeliveryTime() { return deliveryTime; }
+
+    public void setDeliveryTime(String deliveryTime) { this.deliveryTime = deliveryTime; }
+
+    public Integer getNumberOfPages() { return numberOfPages; }
+
+    public void setNumberOfPages(Integer numberOfPages) { this.numberOfPages = numberOfPages; }
 }

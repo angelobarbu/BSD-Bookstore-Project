@@ -11,5 +11,9 @@ public record BookInputDTO(
         Integer stockQuantity,
         String description,
         String coverImageURL,
-        Integer publisherID
+        Integer publisherID,
+        String genre,
+        String collection,
+        String deliveryTime,
+        Integer numberOfPages
 ) {}
