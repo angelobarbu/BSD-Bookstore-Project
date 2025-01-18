@@ -3,6 +3,7 @@ package psb.project.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import psb.project.dto.BookFilterInputDTO;
 import psb.project.dto.BookInputDTO;
 import psb.project.model.Book;
 import psb.project.service.BookService;
@@ -49,5 +50,18 @@ public class BookController {
         boolean deleted = bookService.deleteBook(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<Book>> filterBooks(
+            @RequestBody(required = false) BookFilterInputDTO bookFilterInputDTO,
+            @RequestParam(required = false, defaultValue = "RELEVANCE") String sortBy) {
+
+        List<Book> books;
+
+        books = bookService.filterAndSortBooks(bookFilterInputDTO, sortBy);
+
+        return ResponseEntity.ok(books);
+    }
+
 }
 

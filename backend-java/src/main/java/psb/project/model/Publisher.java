@@ -1,5 +1,6 @@
 package psb.project.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
 import jakarta.validation.constraints.Size;
@@ -22,6 +23,7 @@ public class Publisher {
     private String contactInfo;
 
     @OneToMany(mappedBy = "publisher")
+    @JsonBackReference
     private Set<Book> books;
 
     public Integer getPublisherID() {
