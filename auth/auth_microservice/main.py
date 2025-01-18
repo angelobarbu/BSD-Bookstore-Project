@@ -15,7 +15,7 @@ class Config:
     SCHEDULER_API_ENABLED = True
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root@127.0.0.1/authdb' # For local testing
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:rootadmin@mysql-container/authdb' # For Docker
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root@host.docker.internal/authdb' # Docker container connecting to locally hosted database
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://psbproject53:psb_project2024@34.135.36.156:3306/booksia_db' # Docker container connecting to locally hosted database
 
     # SECRET_KEY = os.urandom(24)
     SECRET_KEY = 'B0CGOm8ez1nBRT1JBo7UXVCgUJCFasUW' # common JWT token secret key for sharing at a backend level
@@ -34,18 +34,24 @@ bcrypt = Bcrypt(app)
 
 class User(db.Model):
     """User model"""
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    userid = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(120), nullable=False)
-    role = db.Column(db.String(50), nullable=False)
+    password_hash = db.Column(db.String(120), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+    birthdate = db.Column(db.Date)
+    phone_number = db.Column(db.String(20))
+    full_name = db.Column(db.String(100))
+    profile_picture = db.Column(db.String(100))
+    # role = db.Column(db.String(50), nullable=False)
     
-class Token(db.Model):
+class Session(db.Model):
     """Token model"""
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    sessionid = db.Column(db.Integer, primary_key=True, autoincrement=True)
     token = db.Column(db.String(500), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    is_active = db.Column(db.Boolean, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow())
+    userid = db.Column(db.Integer, db.ForeignKey('user.userid'), nullable=False)
+    # is_active = db.Column(db.Boolean, nullable=False)
+    # created_at = db.Column(db.DateTime, default=datetime.utcnow())
+    expires_at = db.Column(db.DateTime, default=datetime.utcnow() + timedelta(hours=2))
     
 
 def token_required(f):
@@ -66,7 +72,7 @@ def token_required(f):
 
         # Check if token is valid
 
-        stored_token = Token.query.filter_by(token=token).first()
+        stored_token = Session.query.filter_by(token=token).first()
 
         if stored_token is None:
             return 'Token has expired or is invalid', 405
@@ -78,12 +84,12 @@ def token_required(f):
 def deactivate_old_tokens():
     """Token deactivation method"""
     try:
-        expiration_time = datetime.utcnow() - timedelta(hours=2)
-        Token.query.filter(Token.created_at < expiration_time).update({'is_active': False})
+        db.session.query(Session).filter(Session.expires_at < datetime.utcnow()).delete()
         db.session.commit()
     except Exception as e:
         db.session.rollback()
-        print("Failed to deactivate tokens: ", e)
+        print('Failed to deactivate old tokens: ', e)
+        
         
 # Schedule token deactivation every 1 hours
 scheduler.add_job(id='deactivate_old_tokens', func=deactivate_old_tokens, trigger='interval', hours=2)
@@ -110,7 +116,15 @@ def register():
     # Hash password
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
 
-    new_user = User(email=data['email'], password=hashed_password, role='user')
+    new_user = User(
+        email=data['email'],
+        password_hash=hashed_password,
+        is_admin=data['is_admin'] if 'is_admin' in data else False,
+        birthdate=data['birthdate'] if 'birthdate' in data else None,
+        phone_number=data['phone_number'] if 'phone_number' in data else None,
+        full_name=data['full_name'] if 'full_name' in data else None,
+        profile_picture=data['profile_picture'] if 'profile_picture' in data else None,
+    )
     
     # Add user to database
     try:
@@ -149,18 +163,18 @@ def login():
     # Check if user exists and password is correct
     user = User.query.filter_by(email=email).first()
 
-    if not user or not bcrypt.check_password_hash(user.password, password):
+    if not user or not bcrypt.check_password_hash(user.password_hash, password):
         return make_response('Could not verify user or password', 413, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
     # Login and generate session token
     token = jwt.encode(
-        payload={'email': user.email, 'exp': datetime.utcnow() + timedelta(hours=1)},
+        payload={'email': user.email, 'exp': datetime.utcnow() + timedelta(hours=2)},
         key=app.config['SECRET_KEY'],
         algorithm='HS256'
     )
     
     # Add token to database
-    new_token = Token(token=token, user_id=user.id, is_active=True)
+    new_token = Session(token=token, userid=user.userid, expires_at=datetime.utcnow() + timedelta(hours=2))
     try:
         db.session.add(new_token)
         db.session.commit()
