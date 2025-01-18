@@ -10,7 +10,6 @@ export default function OrderCard({ order }) {
     const [isOpen, setIsOpen] = useState(false);
 
     const handleDialogOpen = () => setIsOpen(true);
-    const handleDialogClose = () => setIsOpen(false);
 
     const handleCancelOrder = () => {
         console.log(`Order ${orderId} has been canceled.`);
