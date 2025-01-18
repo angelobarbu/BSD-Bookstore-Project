@@ -2,26 +2,28 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 
 export default function RatingCard({ review }) {
     const { title, rating, content } = review;
-    const stars = Array.from({ length: 5 }, (_, index) => index < rating);
+
+    const normalizedRating = Math.min(Math.max(rating, 1), 5);
+
+    const stars = Array.from({ length: 5 }, (_, index) => index < normalizedRating);
 
     return (
-        <>
-            <Card>
-                <CardHeader>
-                    <CardTitle>{title}</CardTitle>
-                    <CardDescription>
-                        {stars.map((filled, index) => (
-                            <Star key={index} filled={filled} />
-                        ))}
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <p>{content}</p>
-                </CardContent>
-            </Card>
-        </>
+        <Card>
+            <CardHeader>
+                <CardTitle>{title}</CardTitle>
+                <CardDescription>
+                    {stars.map((filled, index) => (
+                        <Star key={index} filled={filled} />
+                    ))}
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <p>{content}</p>
+            </CardContent>
+        </Card>
     );
 }
+
 
 
 function Star({filled = false}) {

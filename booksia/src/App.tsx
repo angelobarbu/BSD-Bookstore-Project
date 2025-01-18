@@ -4,13 +4,14 @@ import HomePage from "@/pages/HomePage.jsx";
 import NoPage from "@/pages/NoPage.jsx";
 import WishlistPage from "@/pages/WishlistPage.jsx";
 import Checkout from "@/pages/Checkout.jsx";
-import Profile from "@/pages/Profile.jsx";
+import Profile from "@/pages/Profile.tsx";
 import BookPage from "@/pages/BookPage.jsx";
 import AboutUs from "@/pages/AboutUs.jsx";
 import ShippingReturns from "@/pages/ShippingReturns.jsx";
 import ContactUs from "@/pages/ContactUs.jsx";
 import LoginPage from "@/pages/LoginPage.jsx";
 import RegisterPage from "@/pages/RegisterPage.jsx";
+import ReviewsPage from "@/pages/ReviewsPage.tsx";
 
 function App() {
     return (
@@ -54,6 +55,7 @@ function App() {
                     <Route path="/contact-us" element={<ContactUs />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/reviews" element={<ReviewsPage />} />
                     <Route path="*" element={<NoPage />} />
                 </Routes>
             </BrowserRouter>
