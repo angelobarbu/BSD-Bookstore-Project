@@ -12,6 +12,7 @@ import ContactUs from "@/pages/ContactUs.jsx";
 import LoginPage from "@/pages/LoginPage.jsx";
 import RegisterPage from "@/pages/RegisterPage.jsx";
 import ReviewsPage from "@/pages/ReviewsPage.tsx";
+import OrdersPage from "@/pages/OrdersPage.tsx";
 
 function App() {
     return (
@@ -56,6 +57,7 @@ function App() {
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
                     <Route path="/reviews" element={<ReviewsPage />} />
+                    <Route path="/orders" element={<OrdersPage />} />
                     <Route path="*" element={<NoPage />} />
                 </Routes>
             </BrowserRouter>

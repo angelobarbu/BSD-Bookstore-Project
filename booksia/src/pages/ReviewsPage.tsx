@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import Layout from "@/components/ui/layout.tsx";
 import RatingCard from "@/components/RatingCard.jsx";
 
@@ -14,9 +13,10 @@ const reviews = [
 export default function ReviewsPage() {
     return (
         <Layout>
+            <h1 className="text-2xl font-bold text-center py-4">Your Reviews</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
-                {reviews.map((review, index) => (
-                    <RatingCard review={review} />
+                {reviews.map((review) => (
+                    <RatingCard review={review}/>
                 ))}
             </div>
         </Layout>
