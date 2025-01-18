@@ -1,12 +1,12 @@
-import Navbar from "@/components/Navbar.jsx";
-import Footer from "@/components/Footer.jsx";
+
+import React from "react";
+import Layout from "@/components/ui/layout.tsx";
 
 export default function Profile(){
     return (
         <>
-            <Navbar/>
-            <p className="h-screen">TBA</p>
-            <Footer></Footer>
+            <Layout>
+            </Layout>
         </>
     );
 }
