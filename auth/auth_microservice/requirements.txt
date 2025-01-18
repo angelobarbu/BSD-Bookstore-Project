@@ -2,6 +2,7 @@ Flask
 Flask-SQLAlchemy
 Flask-Bcrypt
 Flask-APScheduler
+Flask-Cors
 PyJWT
 psycopg2-binary
 pymysql

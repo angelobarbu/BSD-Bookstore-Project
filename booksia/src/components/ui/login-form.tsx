@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,6 +16,37 @@ export function LoginForm({
                               className,
                               ...props
                           }: React.ComponentPropsWithoutRef<"div">) {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState(null);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        // Base64 encode email and password for Authorization header
+        const authHeader = `Basic ${email}:${password}`;
+
+        try {
+            const response = await fetch("http://127.0.0.1:30201/login", {
+                method: "POST",
+                headers: {
+                    "Authorization": authHeader,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Login failed");
+            }
+
+            const data = await response.json();
+            console.log("Login successful:", data);
+        } catch (err: any) {
+            setError(err.message);
+        }
+    };
+
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <Card>
@@ -25,7 +57,7 @@ export function LoginForm({
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <div className="flex flex-col gap-6">
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email</Label>
@@ -34,6 +66,8 @@ export function LoginForm({
                                     type="email"
                                     placeholder="m@example.com"
                                     required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                 />
                             </div>
                             <div className="grid gap-2">
@@ -46,7 +80,13 @@ export function LoginForm({
                                         Forgot your password?
                                     </a>
                                 </div>
-                                <Input id="password" type="password" required />
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
                             </div>
                             <Button type="submit" className="w-full">
                                 Login
@@ -59,6 +99,7 @@ export function LoginForm({
                             </p></Link>
 
                         </div>
+                        {error && <p className="mt-4 text-red-600">{error}</p>}
                     </form>
                 </CardContent>
             </Card>

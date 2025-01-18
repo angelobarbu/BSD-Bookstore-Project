@@ -7,6 +7,7 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_apscheduler import APScheduler
+from flask_cors import CORS
 from sqlalchemy.sql import text
 import jwt
 
@@ -28,6 +29,9 @@ app.config.from_object(Config())
 scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
+
+# Enable CORS for all routes
+CORS(app)
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)

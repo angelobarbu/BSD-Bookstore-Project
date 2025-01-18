@@ -6,7 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 
 public class JwtTokenUtil {
 
-    private static final String SECRET_KEY = "SECRET_KEY";
+    private static final String SECRET_KEY = "B0CGOm8ez1nBRT1JBo7UXVCgUJCFasUW";
 
     public static String getEmailFromToken(String token) {
         DecodedJWT jwt = JWT.require(Algorithm.HMAC256(SECRET_KEY))
