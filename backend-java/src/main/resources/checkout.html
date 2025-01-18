@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Room Reservation</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+  <section>
+    <div class="product">
+      <img src="https://i.imgur.com/EHyR2nP.png" alt="Room Image" />
+      <div class="description">
+        <h3>Room Reservation</h3>
+        <h5 id="price">$20.00</h5>
+      </div>
+    </div>
+    <form id="checkout-form">
+      <button type="button" id="checkout-button">Checkout</button>
+    </form>
+  </section>
+
+  <script>
+    var stripe = Stripe('YOUR_STRIPE_PUBLIC_KEY');
+    var checkoutButton = document.getElementById('checkout-button');
+
+    checkoutButton.addEventListener('click', function () {
+      var amount = 2000; // Exemplu: 2000 centi pentru $20.00
+      var currency = 'usd';
+      var userId = 'user_id'; // Preia ID-ul utilizatorului curent din aplicația ta
+      var roomId = 'room_id'; // Preia ID-ul camerei din aplicația ta
+      var checkInDate = '01-07-2024'; // Preia data de check-in din aplicația ta
+      var checkOutDate = '07-07-2024'; // Preia data de check-out din aplicația ta
+
+      fetch('/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: amount,
+          currency: currency,
+          user_id: userId,
+          room_id: roomId,
+          check_in_date: checkInDate,
+          check_out_date: checkOutDate
+        }),
+      })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (session) {
+        return stripe.redirectToCheckout({ sessionId: session.id });
+      })
+      .then(function (result) {
+        if (result.error) {
+          alert(result.error.message);
+        }
+      })
+      .catch(function (error) {
+        console.error('Error:', error);
+      });
+    });
+  </script>
+</body>
+</html>
