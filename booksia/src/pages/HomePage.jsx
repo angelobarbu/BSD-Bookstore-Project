@@ -14,6 +14,7 @@ export default function HomePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState("All");
+    const [searchTerm, setSearchTerm] = useState(""); // New state for search term
 
     const navigate = useNavigate();
 
@@ -58,34 +59,36 @@ export default function HomePage() {
         return <p>Error: {error}</p>;
     }
 
-    // Filter books based on selected category
-    const filteredBooks = selectedCategory === "All"
-        ? books
-        : books.filter(book => book.collection === selectedCategory);
+    const filteredBooks = books.filter(book => {
+        const matchesCategory = selectedCategory === "All" || book.collection === selectedCategory;
+        const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase());
+        return matchesCategory && matchesSearch;
+    });
 
     return (
         <>
-            <Navbar />
-            <SearchBar />
-            <BookCategories onCategorySelect={setSelectedCategory} />
+            <Navbar/>
+            <SearchBar onSearch={setSearchTerm}/>
+            <BookCategories onCategorySelect={setSelectedCategory}/>
             <div className="flex gap-2 p-4">
                 <Button variant="outline">Filter</Button>
-                <Order />
+                <Order/>
             </div>
-
-            {filteredBooks.length === 0 ? (
-                <p className="flex flex-col  justify-items-start w-full p-4 h-screen items-center">No books available in this category.</p>
-            ) : (
-                <>
-                    <div className=" grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full p-4">
+                {filteredBooks.length > 0 ? (
+                    <>
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full p-4">
                         {filteredBooks.map((book) => (
-                            <BookCard key={book.id} book={book}/>
+                            <BookCard key={book.id} book={book} />
                         ))}
                     </div>
-                    <Pages/>
-                </>
-
-            )}
+                        <Pages />
+                    </>
+                ) : (
+                    <div className="h-screen text-center w-full col-span-6">
+                        <p className="text-gray-500 text-lg">No books found matching your search or selected
+                            category.</p>
+                    </div>
+                )}
             <Footer/>
         </>
     );
