@@ -5,30 +5,42 @@ import {Button} from "@/components/ui/button.tsx";
 import {Link} from "react-router-dom";
 
 export default function BookCard({ book }) {
-    return (
-        <div className="flex flex-col items-center gap-2 h-full">
-            <Card className="flex flex-col h-full">
-                <Link to={`/book/${book.id}`} className="flex flex-col h-full">
-                    <img
-                        src={book.coverUrl}
-                        alt={`Cover of ${book.title}`}
-                        className="w-full h-auto rounded object-cover"
-                    />
-                    <div className="flex flex-col flex-grow justify-between">
-                        <CardTitle>{book.title}</CardTitle>
-                        <CardDescription className="text-sm text-gray-600">{`by ${book.author}`}</CardDescription>
-                    </div>
-                </Link>
-                <div className="flex items-center justify-between w-full py-1 mt-2">
-                    <p className="text-lg font-semibold">{book.price} LEI</p>
-                    <div onClick={(e) => e.stopPropagation()}>
-                        <Bookmark />
-                    </div>
-                </div>
-            </Card>
-            <Button className="my-2">Add to cart</Button>
-        </div>
-    );
+  console.log(book); // Verify the object structure in the console
+
+  return (
+      <div className="flex flex-col items-center gap-2 h-full">
+          <Card className="flex flex-col h-full">
+              {/* Link to detailed book view */}
+              <Link to={`/book/${book.bookID}`} className="flex flex-col h-full">
+                  {/* Book Cover */}
+                  <img
+                      src={book.coverImageURL} // Use coverImageURL for the book cover
+                      alt={`Cover of ${book.title}`} // Use title for the alt text
+                      className="w-full h-auto rounded object-cover"
+                  />
+                  <div className="flex flex-col flex-grow justify-between">
+                      {/* Book Title */}
+                      <CardTitle>{book.title}</CardTitle>
+                      {/* Display Publisher or Authors */}
+                      <CardDescription className="text-sm text-gray-600">
+                          {book.authors.length > 0
+                              ? `by ${book.authors.join(", ")}`
+                              : `Published by ${book.publisher.name}`}
+                      </CardDescription>
+                  </div>
+              </Link>
+              {/* Price and Bookmark */}
+              <div className="flex items-center justify-between w-full py-1 mt-2">
+                  <p className="text-lg font-semibold">{book.price} LEI</p>
+                  <div onClick={(e) => e.stopPropagation()}>
+                      <Bookmark />
+                  </div>
+              </div>
+          </Card>
+          {/* Add to Cart Button */}
+          <Button className="my-2">Add to cart</Button>
+      </div>
+  );
 }
 
 

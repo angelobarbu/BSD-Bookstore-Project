@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar.jsx";
 import SearchBar from "@/components/SearchBar.jsx";
 import BookCategories from "@/components/BookCategories.jsx";
@@ -7,80 +8,53 @@ import Footer from "@/components/Footer.jsx";
 import Order from "@/components/Order.jsx";
 import { Button } from "@/components/ui/button.tsx";
 
-const books = [
-    {
-        id: 1,
-        coverUrl: "src/assets/ex.jpg",
-        title: "The Great Gatsby",
-        author: "F. Scott Fitzgerald",
-        price: "40.0",
-    },
-    {
-        id: 2,
-        coverUrl: "src/assets/ex.jpg",
-        title: "1984",
-        author: "George Orwell",
-        price: "32.5",
-    },
-    {
-        id: 3,
-        coverUrl: "src/assets/ex.jpg",
-        title: "To Kill a Mockingbird",
-        author: "Harper Lee",
-        price: "25.0",
-    },
-    {
-        id: 4,
-        coverUrl: "src/assets/ex.jpg",
-        title: "Pride and Prejudice",
-        author: "Jane Austen",
-        price: "29.99",
-    },
-    {
-        id: 5,
-        coverUrl: "src/assets/ex.jpg",
-        title: "The Catcher in the Rye",
-        author: "J.D. Salinger",
-        price: "38.5",
-    },
-    {
-        id: 6,
-        coverUrl: "src/assets/ex.jpg",
-        title: "Moby Dick",
-        author: "Herman Melville",
-        price: "42.0",
-    },
-    {
-        id: 7,
-        coverUrl: "src/assets/ex.jpg",
-        title: "The Odyssey",
-        author: "Homer",
-        price: "19.0",
-    },
-    {
-        id: 8,
-        coverUrl: "src/assets/ex.jpg",
-        title: "Brave New World",
-        author: "Aldous Huxley",
-        price: "28.0",
-    },
-    {
-        id: 9,
-        coverUrl: "src/assets/ex.jpg",
-        title: "Crime and Punishment",
-        author: "Fyodor Dostoevsky",
-        price: "33.0",
-    },
-    {
-        id: 10,
-        coverUrl: "src/assets/ex.jpg",
-        title: "The Picture of Dorian Gray",
-        author: "Oscar Wilde",
-        price: "36.0",
-    },
-];
-
 export default function HomePage() {
+    const [books, setBooks] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchBooks = async () => {
+            try {
+                // Retrieve the token from localStorage
+                const token = localStorage.getItem("authToken");
+                if (!token) {
+                    throw new Error("No token found. Please login.");
+                }
+
+                // Make a request with the token in the Authorization header
+                const response = await fetch("http://localhost:8080/books", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`, // Pass the token here
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch books: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                setBooks(data);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchBooks();
+    }, []);
+
+    if (loading) {
+        return <p>Loading books...</p>;
+    }
+
+    if (error) {
+        return <p>Error: {error}</p>;
+    }
+
     return (
         <>
             <Navbar />
