@@ -7,12 +7,14 @@ import Pages from "@/components/Pages.jsx";
 import Footer from "@/components/Footer.jsx";
 import Order from "@/components/Order.jsx";
 import { Button } from "@/components/ui/button.tsx";
+import {useNavigate} from "react-router-dom";
 
 export default function HomePage() {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchBooks = async () => {
             try {
@@ -39,6 +41,7 @@ export default function HomePage() {
                 setBooks(data);
             } catch (err) {
                 setError(err.message);
+                navigate("/login");
             } finally {
                 setLoading(false);
             }

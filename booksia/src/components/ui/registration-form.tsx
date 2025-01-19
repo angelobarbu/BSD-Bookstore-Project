@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +23,14 @@ export function RegistrationForm({
     const [success, setSuccess] = useState<boolean>(false);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        // Check if the user is already logged in
+        const token = localStorage.getItem("authToken");
+        if (token) {
+            navigate("/"); // Redirect to home page or another page
+        }
+    }, [navigate]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -116,8 +124,7 @@ export function RegistrationForm({
                         {error && <p className="mt-4 text-red-600">{error}</p>}
                         {success && (
                             <p className="mt-4 text-green-600">
-                                Registration successful! You will be redirected
-                                shortly.
+                                Registration successful! You will be redirected shortly.
                             </p>
                         )}
                     </form>
@@ -126,5 +133,3 @@ export function RegistrationForm({
         </div>
     );
 }
-
-
