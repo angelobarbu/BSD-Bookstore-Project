@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+
 
 export function LoginForm({
                               className,
@@ -21,6 +22,7 @@ export function LoginForm({
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
 
+    const navigate = useNavigate();
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -42,6 +44,7 @@ export function LoginForm({
 
             const data = await response.json();
             console.log("Login successful:", data);
+            navigate("/");
         } catch (err: any) {
             setError(err.message);
         }
