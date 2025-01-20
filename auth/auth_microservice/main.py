@@ -14,7 +14,7 @@ import jwt
 class Config:
     """Config class for Flask app"""
     SCHEDULER_API_ENABLED = True
-    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:rootadmin@127.0.0.1/authdb' # For local testing
+    # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root@127.0.0.1/authdb' # For local testing
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:rootadmin@mysql-container/authdb' # For Docker
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://psbproject53:psb_project2024@34.135.36.156:3306/booksia_db' # Docker container connecting to locally hosted database
 
@@ -55,7 +55,7 @@ class Session(db.Model):
     userid = db.Column(db.Integer, db.ForeignKey('user.userid'), nullable=False)
     # is_active = db.Column(db.Boolean, nullable=False)
     # created_at = db.Column(db.DateTime, default=datetime.utcnow())
-    expires_at = db.Column(db.DateTime, default=datetime.utcnow() + timedelta(hours=4))
+    expires_at = db.Column(db.DateTime, default=datetime.utcnow() + timedelta(hours=2))
     
 
 def token_required(f):
@@ -88,7 +88,7 @@ def token_required(f):
 def deactivate_old_tokens():
     """Token deactivation method"""
     try:
-        db.session.query(Session).filter(Session.expires_at > (datetime.utcnow() + timedelta(hours=2))).delete()
+        db.session.query(Session).filter(Session.expires_at < datetime.utcnow()).delete()
         db.session.commit()
     except Exception as e:
         db.session.rollback()
@@ -172,13 +172,13 @@ def login():
 
     # Login and generate session token
     token = jwt.encode(
-        payload={'email': user.email, 'exp': datetime.utcnow() + timedelta(hours=4)},
+        payload={'email': user.email, 'exp': datetime.utcnow() + timedelta(hours=2)},
         key=app.config['SECRET_KEY'],
         algorithm='HS256'
     )
     
     # Add token to database
-    new_token = Session(token=token, userid=user.userid, expires_at=datetime.utcnow() + timedelta(hours=4))
+    new_token = Session(token=token, userid=user.userid, expires_at=datetime.utcnow() + timedelta(hours=2))
     try:
         db.session.add(new_token)
         db.session.commit()
