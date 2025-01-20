@@ -14,7 +14,7 @@ export default function HomePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState("All");
-    const [searchTerm, setSearchTerm] = useState(""); // New state for search term
+    const [searchTerm, setSearchTerm] = useState("");
 
     const navigate = useNavigate();
 
@@ -51,6 +51,28 @@ export default function HomePage() {
         fetchBooks();
     }, []);
 
+    const handleSearch = (term) => {
+        setSearchTerm(term);
+
+        // Automatically switch to "All" category if a search term is provided
+        if (term.trim() && selectedCategory !== "All") {
+            setSelectedCategory("All");
+        }
+    };
+
+    const handleCategorySelect = (category) => {
+        setSelectedCategory(category);
+        if (searchTerm) {
+            setSearchTerm("");
+        }
+    };
+
+    const filteredBooks = books.filter(book => {
+        const matchesCategory = selectedCategory === "All" || book.collection === selectedCategory;
+        const matchesSearch = searchTerm ? book.title.toLowerCase().includes(searchTerm.toLowerCase()) : true;
+        return matchesCategory && matchesSearch;
+    });
+
     if (loading) {
         return <p>Loading books...</p>;
     }
@@ -59,37 +81,29 @@ export default function HomePage() {
         return <p>Error: {error}</p>;
     }
 
-    const filteredBooks = books.filter(book => {
-        const matchesCategory = selectedCategory === "All" || book.collection === selectedCategory;
-        const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase());
-        return matchesCategory && matchesSearch;
-    });
-
     return (
         <>
-            <Navbar/>
-            <SearchBar onSearch={setSearchTerm}/>
-            <BookCategories onCategorySelect={setSelectedCategory}/>
+            <Navbar />
+            <SearchBar onSearch={handleSearch} />
+            <BookCategories onCategorySelect={handleCategorySelect} />
             <div className="flex gap-2 p-4">
                 <Button variant="outline">Filter</Button>
-                <Order/>
+                <Order />
             </div>
-                {filteredBooks.length > 0 ? (
-                    <>
-                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full p-4">
-                        {filteredBooks.map((book) => (
-                            <BookCard key={book.id} book={book} />
-                        ))}
-                    </div>
-                        <Pages />
-                    </>
-                ) : (
-                    <div className="h-screen text-center w-full col-span-6">
-                        <p className="text-gray-500 text-lg">No books found matching your search or selected
-                            category.</p>
-                    </div>
-                )}
-            <Footer/>
+            {filteredBooks.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full p-4">
+                    {filteredBooks.map((book) => (
+                        <BookCard key={book.id} book={book} />
+                    ))}
+                </div>
+            ) : (
+                <div className="h-screen text-center w-full col-span-6">
+                    <p className="text-gray-500 text-lg">
+                        No books found matching your search or selected category.
+                    </p>
+                </div>
+            )}
+            <Footer />
         </>
     );
 }
