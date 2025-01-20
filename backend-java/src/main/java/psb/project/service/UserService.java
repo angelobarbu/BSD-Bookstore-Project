@@ -21,13 +21,22 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Optional<User> getUserByEmail(String emailFromToken) {
-        return userRepository.findByEmail(emailFromToken);
+    public Optional<User> getUserByEmail(String email, String emailFromToken) {
+        if (!email.equals(emailFromToken)) {
+            return Optional.empty();
+        }
+        return userRepository.findByEmail(email);
     }
 
-    public Optional<User> updateUser(UserInputDTO userInputDTO, String emailFromToken) {
-        return userRepository.findByEmail(emailFromToken).map(existingUser -> {
+    public Optional<User> updateUser(String email, UserInputDTO userInputDTO, String emailFromToken) {
+        if (!email.equals(emailFromToken)) {
+            return Optional.empty();
+        }
+        return userRepository.findByEmail(email).map(existingUser -> {
             existingUser.setFullName(userInputDTO.fullName());
+            existingUser.setPhoneNumber(userInputDTO.phoneNumber());
+            existingUser.setBirthdate(userInputDTO.birthdate());
+            existingUser.setProfilePicture(userInputDTO.profilePicture());
             if (userInputDTO.password() != null && !userInputDTO.password().isEmpty()) {
                 existingUser.setPasswordHash(passwordEncoder.encode(userInputDTO.password()));
             }

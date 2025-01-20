@@ -8,7 +8,7 @@ public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long paymentID;
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)
@@ -38,11 +38,11 @@ public class Payment {
     // Getters and Setters
 
     public Long getPaymentID() {
-        return id;
+        return paymentID;
     }
 
-    public void setPaymentID(Long id) {
-        this.id = id;
+    public void setPaymentID(Long paymentID) {
+        this.paymentID = paymentID;
     }
 
     public User getUser() {

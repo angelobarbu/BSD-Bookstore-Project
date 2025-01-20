@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,27 +10,18 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from "react-router-dom";
+import {Link} from "react-router-dom";
 
 export function RegistrationForm({
                                      className,
                                      ...props
                                  }: React.ComponentPropsWithoutRef<"div">) {
+
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<boolean>(false);
-
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        // Check if the user is already logged in
-        const token = localStorage.getItem("authToken");
-        if (token) {
-            navigate("/"); // Redirect to home page or another page
-        }
-    }, [navigate]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -45,7 +36,7 @@ export function RegistrationForm({
         };
 
         try {
-            const response = await fetch("http://127.0.0.1:5000/register", {
+            const response = await fetch("http://127.0.0.1:30201/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -58,7 +49,6 @@ export function RegistrationForm({
             }
 
             setSuccess(true);
-            navigate("/");
         } catch (err: any) {
             setError(err.message || "An unknown error occurred.");
         }
@@ -115,16 +105,15 @@ export function RegistrationForm({
                         </div>
                         <div className="mt-4 text-center text-sm">
                             Already have an account?{" "}
-                            <Link to="/login">
-                                <p className="underline underline-offset-4">
-                                    Login
-                                </p>
-                            </Link>
+                            <Link to="/login"><p className="underline underline-offset-4">
+                                Login
+                            </p></Link>
+
                         </div>
                         {error && <p className="mt-4 text-red-600">{error}</p>}
                         {success && (
                             <p className="mt-4 text-green-600">
-                                Registration successful! You will be redirected shortly.
+                                Registration successful! You can now log in.
                             </p>
                         )}
                     </form>

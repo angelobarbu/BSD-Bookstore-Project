@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Layout from "@/components/ui/layout.tsx";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar.tsx";
 import { Input } from "@/components/ui/input.tsx";
@@ -6,146 +6,73 @@ import { Button } from "@/components/ui/button.tsx";
 import { Label } from "@/components/ui/label.tsx";
 
 export default function Profile() {
-    const [profile, setProfile] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const [profile, setProfile] = useState({
+        name: "John Doe",
+        email: "johndoe@example.com",
+        password: "currentPassword123",
+    });
+
     const [editingField, setEditingField] = useState<string | null>(null);
     const [formValues, setFormValues] = useState({
-        fullName: "",
-        email: "",
+        name: profile.name,
+        email: profile.email,
         oldPassword: "",
         newPassword: "",
     });
-
-    useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                const token = localStorage.getItem("authToken");
-                if (!token) {
-                    throw new Error("Token is missing. Please log in.");
-                }
-
-                const response = await fetch(`http://localhost:8080/users`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error("Failed to fetch user profile");
-                }
-
-                const data = await response.json();
-                setProfile(data);
-                setFormValues({
-                    fullName: data.fullName,
-                    email: data.email,
-                    oldPassword: "",
-                    newPassword: "",
-                });
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchUserProfile();
-    }, []);
+    const [error, setError] = useState("");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormValues({ ...formValues, [name]: value });
     };
 
-    const handleSave = async (field: string) => {
-        try {
-            const token = localStorage.getItem("authToken");
-            if (!token) {
-                throw new Error("Token is missing. Please log in.");
+    const handleSave = (field: string) => {
+        if (field === "password") {
+            if (formValues.oldPassword !== profile.password) {
+                setError("Old password is incorrect.");
+                return;
             }
-
-            const payload: Record<string, string> = {};
-            if (field === "fullName") {
-                payload.fullName = formValues.fullName;
-            } else if (field === "email") {
-                payload.email = formValues.email;
-            } else if (field === "password") {
-                if (!formValues.oldPassword || !formValues.newPassword) {
-                    setError("Both old and new passwords are required.");
-                    return;
-                }
-                payload.oldPassword = formValues.oldPassword;
-                payload.newPassword = formValues.newPassword;
-            }
-
-            const response = await fetch(`http://localhost:8080/users`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(payload),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to update user profile");
-            }
-
-            const updatedData = await response.json();
-            setProfile(updatedData);
-            setEditingField(null);
-            setError("");
-            setFormValues({
-                ...formValues,
-                oldPassword: "",
-                newPassword: "",
-            });
-        } catch (err) {
-            setError(err.message);
+            setProfile({ ...profile, password: formValues.newPassword });
+        } else {
+            setProfile({ ...profile, [field]: formValues[field] });
         }
+        setEditingField(null);
+        setError("");
+        setFormValues({ ...formValues, oldPassword: "", newPassword: "" });
     };
 
     const handleCancel = () => {
         setEditingField(null);
         setError("");
         setFormValues({
-            fullName: profile.fullName,
+            name: profile.name,
             email: profile.email,
             oldPassword: "",
             newPassword: "",
         });
     };
 
-    if (loading) {
-        return <p>Loading profile...</p>;
-    }
-
-    if (error) {
-        return <p>Error: {error}</p>;
-    }
-
     return (
         <Layout>
             <section className="flex flex-col items-center p-4">
                 <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>{profile.fullName?.charAt(0)}</AvatarFallback>
+                    <AvatarImage src="https://github.com/shadcn.png"/>
+                    <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
-                <h1 className="text-2xl font-bold mt-4">{profile.fullName}</h1>
+                <h1 className="text-2xl font-bold mt-4">John Doe</h1>
                 <div className="mt-4 w-full max-w-md bg-white shadow-md rounded-lg p-6 space-y-2">
                     <div>
                         <Label className="text-lg font-bold">Name</Label>
-                        {editingField === "fullName" ? (
+                        {editingField === "name" ? (
                             <div className="mt-2 space-y-2">
                                 <Input
-                                    name="fullName"
-                                    value={formValues.fullName}
+                                    name="name"
+                                    value={formValues.name}
                                     onChange={handleChange}
                                 />
                                 <div className="flex justify-between">
                                     <Button
-                                        onClick={() => handleSave("fullName")}
+                                        onClick={() => handleSave("name")}
                                         className="bg-green-500 hover:bg-green-600 text-white"
                                     >
                                         Save
@@ -160,8 +87,8 @@ export default function Profile() {
                             </div>
                         ) : (
                             <div className="flex justify-between items-center mt-2">
-                                <span>{profile.fullName}</span>
-                                <Button onClick={() => setEditingField("fullName")}>
+                                <span>{profile.name}</span>
+                                <Button onClick={() => setEditingField("name")}>
                                     Edit
                                 </Button>
                             </div>
@@ -238,7 +165,9 @@ export default function Profile() {
                         ) : (
                             <div className="flex justify-between items-center mt-2">
                                 <span>********</span>
-                                <Button onClick={() => setEditingField("password")}>Edit</Button>
+                                <Button onClick={() => setEditingField("password")}>
+                                    Edit
+                                </Button>
                             </div>
                         )}
                     </div>
