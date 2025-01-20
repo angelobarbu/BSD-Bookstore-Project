@@ -21,7 +21,7 @@ public class TokenValidationService {
 
         return sessionRepository.findByToken(token)
                 .map(session -> {
-                    boolean isValid = !session.getExpiresAt().toLocalDateTime().isAfter(LocalDateTime.now());
+                    boolean isValid = session.getExpiresAt().toLocalDateTime().isAfter(LocalDateTime.now());
                     System.out.println("Session found, isValid: " + isValid);
                     return isValid;
                 })
