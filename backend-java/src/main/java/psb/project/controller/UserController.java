@@ -19,27 +19,25 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/{email}")
+    @GetMapping()
     public ResponseEntity<User> getUserByEmail(
-            @PathVariable String email,
             @RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         String emailFromToken = JwtTokenUtil.getEmailFromToken(token);
 
-        return userService.getUserByEmail(email, emailFromToken)
+        return userService.getUserByEmail(emailFromToken)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(403).build());
     }
 
-    @PutMapping("/{email}")
+    @PutMapping()
     public ResponseEntity<User> updateUser(
-            @PathVariable String email,
             @RequestBody UserInputDTO userInputDTO,
             @RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         String emailFromToken = JwtTokenUtil.getEmailFromToken(token);
 
-        return userService.updateUser(email, userInputDTO, emailFromToken)
+        return userService.updateUser(userInputDTO, emailFromToken)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(403).build());
     }
